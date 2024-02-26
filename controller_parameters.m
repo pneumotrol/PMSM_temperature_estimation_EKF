@@ -33,4 +33,4 @@ EKF_Sy = diag([0.5^2]);
 % low freq gain:    1/(1+exp(4*k*(f-fc)))
 % high freq gain:   1/(1+exp(-4*k*(f-fc)))
 CF_k = 1; % gradient (-)
-CF_fc = 1; % cutoff frequency (Hz)
+CF_fc = 1/(20*Ts); % cutoff frequency (Hz)

@@ -5,7 +5,7 @@ clc;
 % Simulation parameters
 dt = 50e-6;
 dt_speed_control = 0.001;
-dt_display = 0.01;
+dt_display = 0.02;
 
 % Motor controller parameters
 max_torque = 220;
