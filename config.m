@@ -45,7 +45,7 @@ alpha_flux = 0;
 
 % thermal parameters
 stator_thermal_mass = 100;
-stator_initial_temperatures = [298.15,298.15,298.15];
+stator_initial_temperatures = [298.15;298.15;298.15];
 rotor_thermal_mass = 200;
 rotor_initial_temperatures = 298.15;
 
