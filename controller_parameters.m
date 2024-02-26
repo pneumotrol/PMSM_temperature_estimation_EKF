@@ -35,8 +35,9 @@ cex = -3.9408e-05;
 
 % EKF parameters
 EKF_x0 = [293.15;293.15;293.15;293.15];
-EKF_Sx = diag([0.01^2,0.01^2,0.01^2,0.01^2]);
-EKF_Sy = diag([0.5^2]);
+EKF_P0 = diag([10^2,10^2,10^2,10^2]);
+EKF_Q = diag([0.01^2,0.01^2,0.01^2,0.01^2]);
+EKF_R = diag([0.5^2]);
 
 % complementary filter
 % low freq gain:    1/(1+exp(4*k*(f-fc)))
