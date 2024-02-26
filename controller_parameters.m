@@ -28,3 +28,9 @@ cex = -3.9378e-05;
 EKF_x0 = [273.15;273.15];
 EKF_Sx = diag([0.01^2,0.01^2]);
 EKF_Sy = diag([0.5^2]);
+
+% complementary filter
+% low freq gain:    1/(1+exp(4*k*(f-fc)))
+% high freq gain:   1/(1+exp(-4*k*(f-fc)))
+CF_k = 1; % gradient (-)
+CF_fc = 1; % cutoff frequency (Hz)
