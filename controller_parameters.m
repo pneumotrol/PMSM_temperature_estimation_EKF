@@ -23,3 +23,8 @@ ratio_rotor_ = 0.75;
 ch = 1.3706e-02;
 cJ = 5.0740e-07;
 cex = -3.9378e-05;
+
+% EKF parameters
+EKF_x0 = [273.15;273.15];
+EKF_Sx = diag([0.01^2,0.01^2]);
+EKF_Sy = diag([0.5^2]);
