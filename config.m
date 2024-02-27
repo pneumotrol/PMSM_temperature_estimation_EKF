@@ -5,7 +5,7 @@ clc;
 % Simulation parameters
 dt = 50e-6;
 dt_speed_control = 0.001;
-dt_display = 0.01;
+dt_display = 0.02;
 
 % Motor controller parameters
 max_torque = 220;
@@ -45,7 +45,7 @@ alpha_flux = 0;
 
 % thermal parameters
 stator_thermal_mass = 100;
-stator_initial_temperatures = [298.15,298.15,298.15];
+stator_initial_temperatures = [298.15;298.15;298.15];
 rotor_thermal_mass = 200;
 rotor_initial_temperatures = 298.15;
 
