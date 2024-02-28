@@ -34,7 +34,7 @@ dfluxdxMatrix = [row_PM+row_RM*iVec_th(1);row_PM;row_PM+row_RM*iVec_th(3)]; % Fl
 
 % iron loss parameters
 losses_oc = [50,30,10];
-losses_sc = [30,20,10]; % 実測した鉄損の定常値
+losses_sc = [30,20,10];
 f_losses = 100;
 Isc_losses = 50;
 
