@@ -11,7 +11,9 @@ The base system (to be estimated) is an example provided by MathWorks.
 - [FEM-Parameterized PMSM](https://jp.mathworks.com/help/sps/ref/femparameterizedpmsm.html)
 - [PMSM with Thermal Model - MathWorks](https://jp.mathworks.com/help/sps/ug/pmsm-with-thermal-model.html)
 
-All phisical parameters are kept as default value.
+The iron loss parameters are set to `losses_oc = [50,30,10]`, `losses_sc = [30,20,10]`, and `Rm_percent_rotor = Rd_percent_rotor = 75`.
+
+Other phisical parameters are kept as default value.
 
 This system is partially black boxed, however is equivalent to the following system.
 
@@ -155,9 +157,39 @@ Here, $`k = 1`$ and $`f_c = 1 / (20 T_s)`$ is used.
 
 ## Model verification
 
+![iron loss map](docs/figures/identified_iron_loss.png)
+
 ![iron loss](docs/figures/iron_loss_comparison.png)
 
+The figure shows iron loss comparison between the base system and the model.
+
+The blue line in the bottom figure represents the identified model.
+
+The iron loss parameters are identified to $`c_h = 2.1950 \times 10^{-2}`$ , $`c_J = 1.3968 \times 10^{-6}`$ , and $`c_{ex} = -2.3721 \times 10^{-4}`$ by *identify_iron_loss.mlx* (using `fit` function).
+
+After 5 seconds, the load torque was applied.
+
+---
+
 ![model comparison](docs/figures/thermal_model_comparison.png)
+
+The figure shows model comparison.
+
+The first three are wire temperature, the fourth is rotor temperature, and the last two are motor speed and torque (for reference).
+
+Each line represents:
+
+|| description | sampling frequency |
+|:-|:-|:-|
+| red solid line | base system (truth) | high ( $`50 \mathrm{\mu s}`$ ) |
+| red dotted line | equivalent system | high ( $`50 \mathrm{\mu s}`$ ) |
+| green solid line | DC model | low ( $`10 \mathrm{ms}`$ ) |
+| blue solid line | three phase AC model | low ( $`10 \mathrm{ms}`$ ) |
+| blue dotted line | state space model | low ( $`10 \mathrm{ms}`$ ) |
+
+As mentioned above, the DC model has wire temperature errors at the stall condition.
+
+In contrast, the three phase AC model (and its state space model) has no significant errors.
 
 ## Estimation
 
