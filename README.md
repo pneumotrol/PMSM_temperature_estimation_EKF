@@ -2,74 +2,88 @@
 
 This repository is to estimate wire temperature of PMSM by Extended Kalman Filter (EKF).
 
-## Base model
+## Base system
 
-![base model](docs/figures/model_base.png)
+![base system](docs/figures/model_base.png)
 
-The base model (to be estimated) is an example provided by MathWorks.
+The base system (to be estimated) is an example provided by MathWorks.
 
 - [FEM-Parameterized PMSM](https://jp.mathworks.com/help/sps/ref/femparameterizedpmsm.html)
 - [PMSM with Thermal Model - MathWorks](https://jp.mathworks.com/help/sps/ug/pmsm-with-thermal-model.html)
 
 All phisical parameters are kept as default value.
 
-This model is partially black boxed, however is equivalent to the following model.
+This system is partially black boxed, however is equivalent to the following system.
 
-### Equivalent model
+### Equivalent system
 
-![equivalent model](docs/figures/model_equivalent.png)
+![equivalent system](docs/figures/model_equivalent.png)
 
-The heat generation of the base model PMSM is equivalent to the above.
+The heat generation of the base system PMSM is equivalent to the above.
 
-- The heat capacity of the wires is modeled as thermal mass for each wire.
-- Copper loss is modeled as resistor with thermal port for each wire.
+- The heat capacity of the wires is defined as thermal mass for each wire.
+- Copper loss is defined as resistor with thermal port for each wire.
 - Iron loss (defined as heat flux) is distributed into the rotor part and the wire part.
 
 ## Models used for estimation
 
+### Measurable states
+
+Models are able to use only following states.
+
+- electrical frequency $`f \mathrm{[Hz]}`$
+- dq axis current $`i_d, i_q \mathrm{[A]}`$
+- ambient temperature $`T_a \mathrm{[K]}`$
+- rotor temperature $`T_R \mathrm{[K]}`$
+- electrical angle $`\theta \mathrm{[rad]}`$
+
+The first four are almost low frequency at a constant motor speed.
+
+The last, electrical angle, is to estimate the temperatures of each wire at the stall condition (torque is applied but speed is zero).
+
 ### Iron loss
 
-In the base model, the iron loss $`Q_{iron} \mathrm{[W]}`$ is modeled as:
+In the base system, the iron loss $`Q_{iron} \mathrm{[W]}`$ is defined as:
 
 ```math
 \begin{aligned}
-P_{OC} &= \frac{a_h}{k} V_{m_{rms}}(f(t),i_d(t),i_q(t))
-+ \frac{a_J}{k^2} V_{m_{rms}}^2(f(t),i_d(t),i_q(t))
-+ \frac{a_{ex}}{k^{1.5}} V_{m_{rms}}^{1.5}(f(t),i_d(t),i_q(t)) \\
+P_{OC} &= \frac{a_h}{k} V_{m_{rms}}(f,i_d,i_q)
++ \frac{a_J}{k^2} V_{m_{rms}}^2(f,i_d,i_q)
++ \frac{a_{ex}}{k^{1.5}} V_{m_{rms}}^{1.5}(f,i_d,i_q) \\
 
-P_{SC} &= \frac{b_h}{k} V_{d_{rms}}(f(t),i_d(t))
-+ \frac{b_J}{k^2} V_{d_{rms}}^2(f(t),i_d(t))
-+ \frac{b_{ex}}{k^{1.5}} V_{d_{rms}}^{1.5}(f(t),i_d(t))
+P_{SC} &= \frac{b_h}{k} V_{d_{rms}}(f,i_d)
++ \frac{b_J}{k^2} V_{d_{rms}}^2(f,i_d)
++ \frac{b_{ex}}{k^{1.5}} V_{d_{rms}}^{1.5}(f,i_d)
 \end{aligned}
 ```
 
 ```math
-Q_{iron}(f(t),i_d(t),i_q(t)) = P_{OC} + P_{SC}
+Q_{iron}(f,i_d,i_q) = P_{OC} + P_{SC}
 ```
 
-where, $`f \mathrm{[Hz]}`$ is electrical frequency, $`V_{m_{rms}}, V_{d_{rms}} \mathrm{[V]}`$ are back EMF, $`k \mathrm{[Vs/m]}`$ is back EMF constant, and $`i_d, i_q \mathrm{[A]}`$ are d-axis and q-axis currents, respectively.
+where, $`V_{m_{rms}}, V_{d_{rms}} \mathrm{[V]}`$ are back EMF, $`k \mathrm{[Vs/m]}`$ is back EMF constant.
 
 $`a_h, a_J, a_{ex}, b_h, b_J, b_{ex}`$ are parameters identifying the iron loss.
 
 In the models described below, the iron loss is simplified as:
 
 ```math
-Q_{iron}(f(t),i_{all}(t)) = c_h |f(t) i_{all}(t)| + c_J |f(t) i_{all}(t)|^2 + c_{ex} |f(t) i_{all}(t)|^{1.5}
+Q_{iron}(f,i_{all}) = c_h |f i_{all}| + c_J |f i_{all}|^2 + c_{ex} |f i_{all}|^{1.5}
 ```
 
 where,
 
 ```math
-i_{all}(t) = \sqrt{i_d^2(t) + i_q^2(t)},
+i_{all} = \sqrt{i_d^2 + i_q^2},
 ```
 
-$`f \mathrm{[Hz]}`$ is electrical frequency, $`c_h, c_J, c_{ex}`$ are parameters.
+$`c_h, c_J, c_{ex}`$ are parameters.
 
 ### DC model (low frequency)
 
 ![low-freq simplified model](docs/figures/model_low_freq_simplified.png)
 
-Since the three phase current $`i_a, i_b, i_c`$ (usually high frequency) are used to calculate copper loss in the base model, the simulation also requires a high sampling frequency.
+Since the three phase current $`i_a, i_b, i_c`$ (usually high frequency) are used to calculate copper loss in the base system, the model for estimation also requires a high sampling frequency.
 
 To mitigate this, the following model with equivalent DC $`i_{all}`$ calculated from $`i_d`$ and $`i_q`$ is used in the simulation.
 
@@ -87,11 +101,57 @@ Q_{wire} &= (1 - r) Q_{iron}
 
 It is obvious that this model ignores temperature differences between wires.
 
-Therefore, the stall condition (torque is applied but speed is zero) could result in a large error from the actual temperature.
+Therefore, the stall condition could result in a large error from the actual temperature.
 
 ### Three phase AC model (low frequency)
 
 ![low-freq model](docs/figures/model_low_freq.png)
+
+To estimate the temperature of each wire, the restored three phase current is introduced into the model.
+
+The restored three phase current is calculated from $`i_d`$ and $`i_q`$ with inverse Park's transform:
+
+```math
+\left[ \begin{array}{c}
+i_a \\ i_b \\ i_c
+\end{array} \right]_{Res}
+=
+\sqrt{\frac{2}{3}} \left[ \begin{array}{cc}
+\cos(\theta) & -\sin(\theta) \\
+\cos(\theta - \frac{2}{3} \pi) & -\sin(\theta - \frac{2}{3} \pi) \\
+\cos(\theta + \frac{2}{3} \pi) & -\sin(\theta + \frac{2}{3} \pi) \\
+\end{array} \right]
+
+\left[ \begin{array}{c}
+i_d \\ i_q
+\end{array} \right]
+```
+
+The restored current could be high frequency when motor is high speed, therefore effective current is used at a low speed.
+
+```math
+\left[ \begin{array}{c}
+i_a \\ i_b \\ i_c
+\end{array} \right]_{Eff}
+=
+\frac{1}{\sqrt{3}} \left[ \begin{array}{c}
+i_{all} \\ i_{all} \\ i_{all}
+\end{array} \right]
+```
+
+These are complementaly blended using a sigmoid function.
+
+```math
+i_{abc} = \frac{1}{1 + e^{4 k (f - f_c)}} i_{abc Res} + \frac{1}{1 + e^{-4 k (f - f_c)}} i_{abc Eff}
+```
+
+where, $`f_c \mathrm{[Hz]}`$ is the cutoff frequency and $`k`$ is the parameter determines the gradient at $`f_c`$ .
+
+![sigmoid](docs/figures/sigmoid.png)
+
+From the sampling theorem, $`f_c < 1 / (2 T_s)`$ is required.
+
+Here, $`k = 1`$ and $`f_c = 1 / (20 T_s)`$ is used.
 
 ## Model verification
 
