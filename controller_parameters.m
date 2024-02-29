@@ -9,7 +9,7 @@ C_ = [
     mass2capacitance(1,200);
     ];
 
-% equibalent resistance
+% equivalent resistance
 R_ = [
     convection2resistance(0.1,20);
     convection2resistance(0.1,20);

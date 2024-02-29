@@ -2,6 +2,24 @@
 
 This repository is to estimate wire temperature of PMSM by Extended Kalman Filter (EKF).
 
+## Usage and requirements
+
+- MATLAB
+- Simulink
+- Control System Toolbox
+- Curve Fitting Toolbox
+- Symbolic Math Toolbox
+- Simscape
+- Simscape Electrical
+
+1. Open MATLAB project *PMSM_temperature_estimation_EKF.prj*.
+1. Run *config.m*.
+1. Run *identify_iron_loss.mlx* if iron loss needs to be identified.
+    1. Run the script.
+    1. Copy parameters into *controller_parameters.m*.
+1. Run *derivate_state_equation.mlx* if the state space model is to be updated.
+1. Run the simulink model *PMSM_temperature_estimation_EKF.slx*.
+
 ## Base system
 
 ![base system](docs/figures/model_base.png)
@@ -151,9 +169,15 @@ where, $`f_c \mathrm{[Hz]}`$ is the cutoff frequency and $`k`$ is the parameter 
 
 ![sigmoid](docs/figures/sigmoid.png)
 
-From the sampling theorem, $`f_c < 1 / (2 T_s)`$ is required.
+From the sampling theorem, $`f_c < 1 / (2 T_s)`$ is required where $`T_s \mathrm{[s]}`$ is the sampling period.
 
 Here, $`k = 1`$ and $`f_c = 1 / (20 T_s)`$ is used.
+
+### State space model
+
+The state space model is derived by *derivate_state_equation.mlx*.
+
+The model is observable when three phase current $`i_a, i_b, i_c`$ are independent (sufficient condition).
 
 ## Model verification
 
@@ -162,7 +186,6 @@ Here, $`k = 1`$ and $`f_c = 1 / (20 T_s)`$ is used.
 ![iron loss](docs/figures/iron_loss_comparison.png)
 
 The figure shows iron loss comparison between the base system and the model.
-
 The blue line in the bottom figure represents the identified model.
 
 The iron loss parameters are identified to $`c_h = 2.1950 \times 10^{-2}`$ , $`c_J = 1.3968 \times 10^{-6}`$ , and $`c_{ex} = -2.3721 \times 10^{-4}`$ by *identify_iron_loss.mlx* (using `fit` function).
@@ -194,3 +217,13 @@ In contrast, the three phase AC model (and its state space model) has no signifi
 ## Estimation
 
 ![estimation result](docs/figures/estimation_verification.png)
+
+Temperature estimation is achieved by built-in Extended Kalman Filter.
+
+- State space model is discretized using the Euler method.
+- Process noise is assumed to be additive.
+
+The figure shows estimation results.
+
+The first three are wire temperature, the fourth is rotor temperature, and the last is erros between the base system and the estimated temperature.
+In the temperature results, the red lines represent the base system and the blue lines represent the estimated values.
