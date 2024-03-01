@@ -139,7 +139,7 @@ i_a \\ i_b \\ i_c
 \sqrt{\frac{2}{3}} \left[ \begin{array}{cc}
 \cos(\theta) & -\sin(\theta) \\
 \cos(\theta - \frac{2}{3} \pi) & -\sin(\theta - \frac{2}{3} \pi) \\
-\cos(\theta + \frac{2}{3} \pi) & -\sin(\theta + \frac{2}{3} \pi) \\
+\cos(\theta + \frac{2}{3} \pi) & -\sin(\theta + \frac{2}{3} \pi)
 \end{array} \right]
 
 \left[ \begin{array}{c}
