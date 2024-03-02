@@ -162,7 +162,7 @@ i_{all} \\ i_{all} \\ i_{all}
 These are complementaly blended using a sigmoid function.
 
 ```math
-i_{abc} = \frac{1}{1 + e^{4 k (f - f_c)}} i_{abc Res} + \frac{1}{1 + e^{-4 k (f - f_c)}} i_{abc Eff}
+i_{abc} = \frac{1}{1 + e^{4 k (f - f_c)}} |i_{abc Res}| + \frac{1}{1 + e^{-4 k (f - f_c)}} |i_{abc Eff}|
 ```
 
 where, $`f_c \mathrm{[Hz]}`$ is the cutoff frequency and $`k`$ is the parameter determines the gradient at $`f_c`$ .
