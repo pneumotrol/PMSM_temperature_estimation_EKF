@@ -29,9 +29,7 @@ alpha_ = 3.93e-3;
 
 % iron loss model parameters
 ratio_rotor_ = 0.75;
-ch = 2.1950e-02;
-cJ = 1.3968e-06;
-cex = -2.3721e-04;
+Qiron_c = [0.6045,0.0051,0.0031,4.1350e-07];
 
 % EKF parameters
 EKF_x0 = [293.15;293.15;293.15;293.15];

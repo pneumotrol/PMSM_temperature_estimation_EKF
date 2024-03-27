@@ -1,4 +1,3 @@
-function Qiron = iron_loss(f,Ia,ch,cJ,cex)
-    V = f.*Ia;
-    Qiron = ch.*V+cJ.*V.^2+cex.*V.^1.5;
+function Qiron = iron_loss(f,Ia,c)
+    Qiron = f.*(c(1)+c(2)*Ia+c(3)*f+c(4)*f.*Ia.^2);
 end
