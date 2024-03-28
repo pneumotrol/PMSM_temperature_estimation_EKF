@@ -23,8 +23,8 @@ R_ = [
     ];
 
 % copper loss model parameters
-T_0_ = 298.15;
 R_0_ = 0.013;
+T_0_ = 298.15;
 alpha_ = 3.93e-3;
 
 % iron loss model parameters
