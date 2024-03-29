@@ -175,7 +175,7 @@ Here, $`k = 1`$ and $`f_c = 1 / (20 T_s)`$ is used.
 
 ### State space model
 
-The state space model is derived by *derivate_state_equation.mlx* and is based on the *three phase AC model (low frequency)*.
+The state space model is derived by *derivate_state_equation.mlx* and is based on the *three phase AC model (low frequency)*. [[pdf]](docs/derivate_state_equation.pdf)
 
 The model is observable when three phase current $`i_a, i_b, i_c`$ are independent (sufficient condition).
 
@@ -188,7 +188,7 @@ The model is observable when three phase current $`i_a, i_b, i_c`$ are independe
 The figure shows iron loss comparison between the base system and the model.
 The blue line in the bottom figure represents the identified model.
 
-The iron loss parameters are identified to $`c_1 = 0.8031`$ , $`c_2 = 0.0041`$ , $`c_3 = 0.0016`$ and $`c_4 = 4.3449 \times 10^{-7}`$ by *identify_iron_loss.mlx* (using `curveFitter`).
+The iron loss parameters are identified to $`c_1 = 0.8031`$ , $`c_2 = 0.0041`$ , $`c_3 = 0.0016`$ and $`c_4 = 4.3449 \times 10^{-7}`$ by *identify_iron_loss.mlx* (using `curveFitter`). [[pdf]](docs/identify_iron_loss.pdf)
 
 After 5 seconds, the load torque was applied.
 
@@ -208,7 +208,7 @@ Each line represents:
 | red dotted line | equivalent system | high ( $`20 \mathrm{kHz}`$ ) | base |
 | green solid line | DC model | low ( $`100 \mathrm{Hz}`$ ) | base |
 | blue solid line | three phase AC model | low ( $`100 \mathrm{Hz}`$ ) | base |
-| blue dotted line | state space model | low ( $`100 \mathrm{Hz}`$ ) | gray-box identification (PEM) |
+| blue dotted line | state space model | low ( $`100 \mathrm{Hz}`$ ) | gray-box identification (PEM) [[pdf]](docs/identify_thermal_network.pdf) |
 
 As mentioned above, the DC model has wire temperature errors at the stall condition.
 
