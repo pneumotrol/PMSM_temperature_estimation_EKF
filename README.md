@@ -17,7 +17,7 @@ This repository is to estimate wire temperature of PMSM by Extended Kalman Filte
 1. Run *identify_iron_loss.mlx* if iron loss needs to be identified.
     1. Run the script.
     1. Copy parameters into *controller_parameters.m*.
-1. Run *derivate_state_equation.mlx* if the state space model is to be updated.
+1. Run *derivate_state_equation.mlx* and *identify_thermal_network.mlx* if the state space model is to be updated.
 1. Run the simulink model *PMSM_temperature_estimation_EKF.slx*.
 
 ## Base system
@@ -59,7 +59,7 @@ Models are able to use only following states.
 
 The first four are almost low frequency at a constant motor speed.
 
-The last, electrical angle, is to estimate the temperatures of each wire at the stall condition (torque is applied but speed is zero).
+The last, electrical angle, is used to estimate the temperatures of each wire at the stall condition (torque is applied but speed is zero).
 
 ### Iron loss
 
@@ -88,7 +88,7 @@ $`a_h, a_J, a_{ex}, b_h, b_J, b_{ex}`$ are parameters identifying the iron loss.
 In the models described below, the iron loss is simplified as:
 
 ```math
-Q_{iron}(f,i_{all}) = c_h |f i_{all}| + c_J |f i_{all}|^2 + c_{ex} |f i_{all}|^{1.5}
+Q_{iron}(f,i_{all}) = f (c_1 + c_2 i_{all} + c_3 f + c_4 f i_{all}^2)
 ```
 
 where,
@@ -97,7 +97,7 @@ where,
 i_{all} = \sqrt{i_d^2 + i_q^2},
 ```
 
-$`c_h, c_J, c_{ex}`$ are parameters.
+$`c_i ~(i = 1, 2, \cdots, 4)`$ are parameters.
 
 ### DC model (low frequency)
 
@@ -175,7 +175,7 @@ Here, $`k = 1`$ and $`f_c = 1 / (20 T_s)`$ is used.
 
 ### State space model
 
-The state space model is derived by *derivate_state_equation.mlx*.
+The state space model is derived by *derivate_state_equation.mlx* and is based on the *three phase AC model (low frequency)*.
 
 The model is observable when three phase current $`i_a, i_b, i_c`$ are independent (sufficient condition).
 
@@ -188,7 +188,7 @@ The model is observable when three phase current $`i_a, i_b, i_c`$ are independe
 The figure shows iron loss comparison between the base system and the model.
 The blue line in the bottom figure represents the identified model.
 
-The iron loss parameters are identified to $`c_h = 2.1950 \times 10^{-2}`$ , $`c_J = 1.3968 \times 10^{-6}`$ , and $`c_{ex} = -2.3721 \times 10^{-4}`$ by *identify_iron_loss.mlx* (using `fit` function).
+The iron loss parameters are identified to $`c_1 = 0.8031`$ , $`c_2 = 0.0041`$ , $`c_3 = 0.0016`$ and $`c_4 = 4.3449 \times 10^{-7}`$ by *identify_iron_loss.mlx* (using `curveFitter`).
 
 After 5 seconds, the load torque was applied.
 
@@ -202,13 +202,13 @@ The first three are wire temperature, the fourth is rotor temperature, and the l
 
 Each line represents:
 
-|| description | sampling frequency |
-|:-|:-|:-|
-| red solid line | base system (truth) | high ( $`50 \mathrm{\mu s}`$ ) |
-| red dotted line | equivalent system | high ( $`50 \mathrm{\mu s}`$ ) |
-| green solid line | DC model | low ( $`10 \mathrm{ms}`$ ) |
-| blue solid line | three phase AC model | low ( $`10 \mathrm{ms}`$ ) |
-| blue dotted line | state space model | low ( $`10 \mathrm{ms}`$ ) |
+|| description | sampling frequency | parameters |
+|:-|:-|:-|:-|
+| red solid line | base system (truth) | high ( $`20 \mathrm{kHz}`$ ) | base |
+| red dotted line | equivalent system | high ( $`20 \mathrm{kHz}`$ ) | base |
+| green solid line | DC model | low ( $`100 \mathrm{Hz}`$ ) | base |
+| blue solid line | three phase AC model | low ( $`100 \mathrm{Hz}`$ ) | base |
+| blue dotted line | state space model | low ( $`100 \mathrm{Hz}`$ ) | gray-box identification (PEM) |
 
 As mentioned above, the DC model has wire temperature errors at the stall condition.
 
